@@ -6,7 +6,7 @@
 /*   By: agundry <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 13:55:33 by agundry           #+#    #+#             */
-/*   Updated: 2017/02/14 17:00:31 by agundry          ###   ########.fr       */
+/*   Updated: 2017/02/21 17:21:14 by agundry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,34 +14,57 @@
 
 int	get_next_line(const int fd, char **line)
 {
-	t_list	*list;
-	char	*back;
-	char	*gotline;
-	char	buf[BUFFSIZE + 1];
-	char	front[BUFFSIZE + 1];
- 
-	if ((list = findinlist(fd)))  //store fd in content size? make new struct?
-		buf = list->content;
-	while (!back || (back[0] != '\n' && back[0] != '\0'))
+	static char	*fdstr[256];
+	char		*back;
+	char		*front;
+	char		*gotline;
+	char		buf[BUFF_SIZE + 1];
+
+	ft_bzero(buf, (BUFF_SIZE + 1));
+	if (fdstr[fd])
+		ft_strcpy(buf, fdstr[fd]);
+	back = buf;
+	gotline = NULL;
+	while (!(*back == '\n') || !(*back == '\0' && back > &buf[BUFF_SIZE]))
 	{
-		if (!buf[0] || !back)
-			read(fd, buf, BUFFSIZE);
-		if ((back = ft_strchr(buf, '\n')))
-		{
-			ft_strdup(list->content, (back + 1));
-			ft_strncpy(front, buf, (back - buf - 1));
-		}
-		else
-			ft_strcpy(front, buf);
-		back = ft_strchr(buf, '\0') ? ft_strchr(buf, '\0') : buf;
-		if (!gotline)
-			gotline = ft_strdup(front);
-		else ft_strjoin(gotline, front);
+		reader(fd, buf);
+		if ((back = ft_strchr(buf, '\n')) && *(back + 1))
+			fdstr[fd] = ft_strdup((back + 1));
+		else back = ft_strchr(buf, '\0');
+		front = ft_strndup(buf, (back - buf + 1));
+		gotline = linegetter(gotline, front);
 	}
-	if (gotline)
+	line[fd] = *gotline ? ft_strdup(gotline) : NULL;
+	return (*line[fd] ? 1 : 0);
+}
+
+void	reader(int fd, char *buf)
+{
+	static int	swich;
+
+	if (!(*buf))
 	{
-		list->line = ft_strdup(gotline);
-		return (1);
+		read(fd, buf, BUFF_SIZE);
+		swich = 1;
 	}
-	else return (0);
+	else if (swich == 1)
+	{
+		ft_bzero(buf, (BUFF_SIZE + 1));
+		read(fd, buf, BUFF_SIZE);
+		swich = 1;
+	}
+}
+
+char	*linegetter(char *d, char *s)
+{
+	char	*tmp;
+
+	if (d != NULL)
+	{
+		tmp = ft_strdup(d);
+		free(d);
+		d = ft_strjoin(tmp, s);
+		return (d);
+	}
+	else return (d = ft_strdup(s));
 }

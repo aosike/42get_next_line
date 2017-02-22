@@ -6,7 +6,7 @@
 #    By: agundry <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/02/10 17:16:55 by agundry           #+#    #+#              #
-#    Updated: 2017/02/14 17:00:04 by agundry          ###   ########.fr        #
+#    Updated: 2017/02/20 15:16:34 by agundry          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ CC = 	gcc
 
 CFLAGS =	-Wall -Wextra -Werror -g
 
-SRC =	shit_next_line.c			\
+SRC =	get_next_line.c			\
 		test.c
 
 OBJ =	$(patsubst %.c,%.o,$(SRC))

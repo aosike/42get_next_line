@@ -6,13 +6,13 @@
 /*   By: agundry <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/02 20:59:34 by agundry           #+#    #+#             */
-/*   Updated: 2017/02/14 21:12:12 by agundry          ###   ########.fr       */
+/*   Updated: 2017/02/21 16:35:57 by agundry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
-# define BUFFSIZE 32
+# define BUFF_SIZE 32
 # include <fcntl.h>
 # include "libft/libft.h"
 
@@ -24,6 +24,8 @@
 	struct s_list	*next;
 }					t_list;
 */
-int	get_next_line(const int fd, char **line);
+int		get_next_line(const int fd, char **line);
+char	*linegetter(char *d, char *s);
+void	reader(int fd, char *buf);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: agundry <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/02 20:27:38 by agundry           #+#    #+#             */
-/*   Updated: 2017/02/16 17:14:34 by agundry          ###   ########.fr       */
+/*   Updated: 2017/02/20 17:28:02 by agundry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ int	get_next_line(const int fd, char **line)
 	char		buf[BUFFSIZE + 1];
 	
 	back = NULL;
+	gotline = NULL;
 	ft_bzero(buf, (BUFFSIZE + 1));
 	if (fdstr[fd])
 		ft_strcpy(buf, fdstr[fd]);

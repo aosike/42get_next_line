@@ -1,26 +1,29 @@
 #include <stdio.h>
 #include "get_next_line.h"
 
-int		main(int argc, char **argv)
+int	main(int ac, char **av)
 {
-	char	*line;
+	char	*lines[256];
 	int		fd;
+	int		file;
 	int		res;
 	int		num;
 
 	res = 0;
 	num = 0;
-	line = NULL;
-	argc = 0;
-	fd = open(argv[1], O_RDONLY);
-
-	if (fd > 0)
-		while ((res = get_next_line(fd, &line)) > 0)
-			printf("[Ret: %d, # of Line: %d, FD: %d] %s\n", res, ++num, fd, line);
-	printf("[Ret: %d, # of Line: %d, FD: %d] %s\n", res, ++num, fd, line);
+	file = 1;
+	while (file <= ac && (fd = open(av[file++], O_RDONLY)))
+	{	
+		while ((res = get_next_line(fd, lines)))
+		{
+			printf("[Ret: %d, # of Line: %d, FD: %d] %s\n", res, ++num, fd, lines[fd]);
+			free(lines[fd]);
+		}
+		fd++;
+	}
 	if ((fd > 0 && (close(fd) == -1 || res != 0)) || fd < 0)
 	{
-		if (!line)
+		if (!(*(lines)))
 			write(1, "error\n", 6);
 		return (1);
 	}

@@ -17,7 +17,7 @@ int	main(int ac, char **av)
 		while ((res = get_next_line(fd, lines)))
 		{
 			printf("[Ret: %d, # of Line: %d, FD: %d] %s\n", res, ++num, fd, lines[fd]);
-			free(lines[fd]);
+		ft_strdel(&lines[fd]);
 		}
 		fd++;
 	}

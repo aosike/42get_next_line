@@ -6,7 +6,7 @@
 /*   By: agundry <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/02 20:59:34 by agundry           #+#    #+#             */
-/*   Updated: 2017/02/22 21:46:59 by agundry          ###   ########.fr       */
+/*   Updated: 2017/03/01 16:47:57 by agundry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,6 @@
 */
 int		get_next_line(const int fd, char **line);
 char	*linegetter(char *d, char *s);
-void	readwrap(int fd, char *buf, char *fdstr[256]);
+int		readwrap(int fd, char *buf, char *fdstr);
 
 #endif

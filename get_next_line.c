@@ -5,58 +5,38 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: agundry <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/02/14 13:55:33 by agundry           #+#    #+#             */
-/*   Updated: 2017/03/01 17:21:52 by agundry          ###   ########.fr       */
+/*   Created: 2017/03/03 11:49:11 by agundry           #+#    #+#             */
+/*   Updated: 2017/03/04 19:37:52 by agundry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
-
-//should front (thus, line) include the trailing newline?
+#include	"get_next_line.h"
 
 int	get_next_line(const int fd, char **line)
 {
 	static char	*fdstr[256];
-	char		*back;
-	char		*front;
 	char		buf[BUFF_SIZE + 1];
+	char		*front;
+	char		*back;
+	size_t		rsize;
 
 	ft_bzero(buf, (BUFF_SIZE + 1));
-	line[fd] = NULL;
-	if (fdstr[fd] && *fdstr[fd])
+	if (fdstr[fd] && *fdstr[fd])  //ft_strdel of fdstr??
 		ft_strcpy(buf, fdstr[fd]);
-	back = buf;
-	front = NULL;
-	while ((*back != '\n') && !(*back == '\0' && back > &buf[BUFF_SIZE]))
+	rsize = 1;
+	while ((!line[fd] || !(ft_strchr(line[fd], '\n'))) && rsize > 0) //appears as though line[fd] will always exist. 																			fucking lame
 	{
-		if (readwrap(fd, buf, fdstr[fd]))
-			ft_strdel(&fdstr[fd]);
 		if ((back = ft_strchr(buf, '\n')))
 			fdstr[fd] = !(*(back + 1)) ? NULL : ft_strdup((back + 1));
 		else
 			back = ft_strchr(buf, '\0');
-		front = ft_strndup(buf, (back - buf));
+		front = ft_strndup(buf, ((*back == '\n' ? (back + 1) : back) - buf)); //ft_strdel to front??
 		line[fd] = linegetter(line[fd], front);
-		ft_strdel(&front);
+		ft_bzero(buf, BUFF_SIZE);
+		if (!(ft_strchr(line[fd], '\n')))
+			rsize = read(fd, buf, BUFF_SIZE);
 	}
-	return (line[fd] ? 1 : 0);
-}
-
-int	readwrap(int fd, char *buf, char *fdstr)
-{
-	if (!(*buf))
-	{
-		read(fd, buf, BUFF_SIZE);
-		return (0);
-	}
-	else if (fdstr && *fdstr)
-		return (1);
-	else
-	{
-		ft_bzero(buf, (BUFF_SIZE + 1));
-		read(fd, buf, BUFF_SIZE);
-	}
-	return (0);
+	return (*line[fd] ? 1 : 0);	
 }
 
 char	*linegetter(char *d, char *s)
@@ -66,8 +46,10 @@ char	*linegetter(char *d, char *s)
 	if (d != NULL)
 	{
 		tmp = ft_strdup(d);
-		ft_strdel(&d);
+		if (*d)
+			ft_strdel(&d);
 		d = ft_strjoin(tmp, s);
+		ft_strdel(&tmp);
 		return (d);
 	}
 	else return (d = ft_strdup(s));

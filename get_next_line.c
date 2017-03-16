@@ -5,70 +5,53 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: agundry <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/03/03 11:49:11 by agundry           #+#    #+#             */
-/*   Updated: 2017/03/11 15:11:57 by agundry          ###   ########.fr       */
+/*   Created: 2017/03/15 16:00:03 by agundry           #+#    #+#             */
+/*   Updated: 2017/03/15 17:13:51 by agundry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include	"get_next_line.h"
+#include "get_next_line.h"
 
-int	get_next_line(const int fd, char **line)
+int	get_next_line(int fd, char **line)
 {
-	static char	*fdstr[256];
-	char		buf[BUFF_SIZE + 1]; ///might have to malloc in order to save lines :///
-	char		*front;
-	char		*back;
-	size_t		rsize;
+	static char	keep[256][BUFF_SIZE];
+	char		buf[BUFF_SIZE + 1];
+	char		*b;
+	char		*f;
+	size_t		s;
 
-	ft_bzero(buf, (BUFF_SIZE + 1));
-	if (fdstr[fd] && *fdstr[fd])
+	ft_bzero(buf, BUFF_SIZE + 1); //VERY CLOSE - is adding newline to f.
+	s = BUFF_SIZE;
+	f = 0;
+	if (*keep[fd])
+		ft_strcpy(buf, keep[fd]);
+	else
+		s = read(fd, buf, BUFF_SIZE);
+	ft_bzero(keep[fd], BUFF_SIZE);
+	while (s > 0)
 	{
-		ft_strcpy(buf, fdstr[fd]);
-		ft_strdel(&fdstr[fd]);
+		if ((b = ft_strchr(buf, '\n')))
+			ft_strcpy(keep[fd], b + 1);
+		else b = ft_strchr(buf, '\0');
+		ft_bzero(b + 1, ((BUFF_SIZE + 1) - (b - buf)));
+		f = linegetter(f, buf);
+		s = (*b != '\n') ? read(fd, buf, BUFF_SIZE) : 0;
 	}
-	rsize = BUFF_SIZE;
-	while (rsize > 0)
-	{
-		if ((back = ft_strchr(buf, '\n')))
-			fdstr[fd] = !(*(back + 1)) ? NULL : ft_strdup((back + 1));
-		else
-			back = ft_strchr(buf, '\0');
-		front = linegetter(front, buf, back);
-		if (*back != '\n')
-		{
-			ft_bzero(buf, (BUFF_SIZE + 1));      //would save lines here : see top
-			rsize = read(fd, buf, BUFF_SIZE);
-		}
-		else rsize = 0;
-	}
-	*line = *front ? ft_strndup(front, (ft_strlen(front) - 1)) : NULL;
-	ft_strdel(&front);
-	return (*line ? 1 : 0);	
+	*line = f ? ft_strdup(f) : 0;
+	return (*line ? 1 : 0);
 }
 
-char	*linegetter(char *d, char *s, char *b)
+char	*linegetter(char *d, char *s)
 {
 	char	*tmp;
-	char	*tmp1;
 
-	tmp1 = ft_strndup(s, (((*b == '\n') ? (b + 1) : b) - s));
 	if (d != NULL)
 	{
 		tmp = ft_strdup(d);
-		if (*d)
-			ft_strdel(&d);
-		d = ft_strjoin(tmp, tmp1);
-		if (*tmp)
-			ft_strdel(&tmp);
-		if (*tmp1)
-			ft_strdel(&tmp1);
+		ft_strdel(&d);
+		d = ft_strjoin(tmp, s);
+		ft_strdel(&tmp);
 		return (d);
 	}
-	else
-	{
-		d = ft_strdup(tmp1);
-		if (*tmp1)
-			ft_strdel(&tmp1);
-		return (d);
-	}
+	else return (d = ft_strdup(s));
 }

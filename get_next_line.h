@@ -3,28 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agundry <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: agundry <agundry@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/02/02 20:59:34 by agundry           #+#    #+#             */
-/*   Updated: 2017/03/21 17:33:57 by agundry          ###   ########.fr       */
+/*   Created: 2017/04/04 13:47:00 by agundry           #+#    #+#             */
+/*   Updated: 2017/04/04 13:58:19 by agundry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 # define BUFF_SIZE 42
+# define MAX_FD 4864
 # include <fcntl.h>
 # include "libft/libft.h"
 
-typedef struct	s_gnl{
-	char		buf[BUFF_SIZE + 1];
-	int			s;
-	char		*f;
+typedef	struct	s_gnl {
+	char		s[BUFF_SIZE + 1];
 	char		*b;
+	char		*f;
+	char		*tmp;
+	char		*src;
+	int			i;
 }				t_gnl;
 
-int		get_next_line(const int fd, char **line);
-int		gnlinit(char (*keep)[BUFF_SIZE], int fd, t_gnl *gnl, char ***line);
-char	*linegetter(char *d, char *s);
-
+int				get_next_line(int fd, char **line);
+static int		gnl_lineget(t_gnl *gnl, char (*keep)[BUFF_SIZE], int fd);
 #endif

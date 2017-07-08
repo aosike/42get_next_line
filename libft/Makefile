@@ -47,7 +47,6 @@ $(NAME) : $(SRC)
 	$(CC) $(CFLAGS) -c $? $(IFLAGS) 
 	$(ARCH)
 	$(INDX)
-	rm -f $(OBJ)
 
 all : $(NAME)
 

@@ -38,7 +38,7 @@ static int	gnl_lineget(t_gnl *gnl, char (*keep)[BUFF_SIZE], int fd)
 	return (1);
 }
 
-int	get_next_line(int fd, char **line)
+int			get_next_line(int fd, char **line)
 {
 	static char	keep[MAX_FD][BUFF_SIZE];
 	t_gnl		gnl;

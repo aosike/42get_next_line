@@ -27,5 +27,4 @@ typedef	struct	s_gnl {
 }				t_gnl;
 
 int				get_next_line(int fd, char **line);
-static int		gnl_lineget(t_gnl *gnl, char (*keep)[BUFF_SIZE], int fd);
 #endif
